@@ -204,6 +204,13 @@ var UIController = (function() {
         return sign + ' ' + num;
     }
 
+    var nodeListForEach = function(list, callback) {
+        for(var i=0; i<list.length; i++)
+        {
+            callback(list[i], i);
+        }
+    };
+
     return {
         getInput: function() {
             return {
@@ -286,13 +293,6 @@ var UIController = (function() {
         displayPercentages: function(percentages) {
 
             var fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
- 
-            var nodeListForEach = function(list, callback) {
-                 for(var i=0; i<list.length; i++)
-                 {
-                     callback(list[i], i);
-                 }
-            };
 
             nodeListForEach(fields, function(current, index) {
 
@@ -315,6 +315,22 @@ var UIController = (function() {
             var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
             document.querySelector(DOMstrings.dateLabel).textContent = months[month] + ' ' + year;
+        },
+
+        // Changes border color of inputs according to type of input
+        changedType: function() {
+
+            var fields = document.querySelectorAll(
+                DOMstrings.inputType + ',' + 
+                DOMstrings.inputDescription + ',' +
+                DOMstrings.inputValue
+            );
+
+            nodeListForEach(fields, function(current){
+                current.classList.toggle('red-focus');
+            });
+
+            document.querySelector(DOMstrings.inputBtn).classList.toggle('red');
         },
 
         // Returns the user input value in each input of the page.
@@ -347,6 +363,8 @@ var controller = (function(budgetCtrl, UICtrl) {
         // Functionality for the delete button
         document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
 
+        // Modify CSS of inputs to adjust color depending on income/expense
+        document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType);
     };
 
     var updateBudget = function() {
